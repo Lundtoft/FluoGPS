@@ -6,11 +6,102 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#eeeeee">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="Distance (m):"
+        android:id="@+id/textView" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/distInput"
+        android:layout_below="@+id/textView"
+        android:layout_alignLeft="@+id/textView"
+        android:background="#ffffff"
+        android:textSize="30sp"
+        android:numeric="integer" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time (ms):"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/distInput"
+        android:layout_alignLeft="@+id/distInput"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/timeInput"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/distInput"
+        android:background="#ffffff"
+        android:textSize="30sp"
+        android:textIsSelectable="true"
+        android:numeric="integer" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:id="@+id/distBtn"
+        android:layout_alignBottom="@+id/distInput"
+        android:layout_toRightOf="@+id/distInput" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:id="@+id/timeBtn"
+        android:layout_alignBottom="@+id/timeInput"
+        android:layout_toRightOf="@+id/timeInput" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Only on accelerometer movement"
+        android:id="@+id/accelerometerCheck"
+        android:checked="false"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/maxInput" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Max speed (m/s):"
+        android:id="@+id/textView3"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/timeInput"
+        android:layout_alignLeft="@+id/timeInput" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/maxInput"
+        android:background="#ffffff"
+        android:textSize="30sp"
+        android:textIsSelectable="true"
+        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/timeInput"
+        android:numeric="integer" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set"
+        android:id="@+id/maxBtn"
+        android:layout_alignBottom="@+id/maxInput"
+        android:layout_toRightOf="@+id/maxInput" />
 
 </RelativeLayout>
