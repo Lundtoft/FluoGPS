@@ -10,6 +10,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ServerCom com = new ServerCom("http://api.greenticket.dk/events/27", 8080, getApplicationContext());
+        com.sendFixToServer("hej");
     }
 
 
