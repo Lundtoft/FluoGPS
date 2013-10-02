@@ -1,5 +1,11 @@
 package dk.fluo.gps;
 
+import java.util.*;
+
+import android.app.Activity;
+import android.location.*;
+import android.content.Context;
+
 /**
  * Created by hagbarth on 9/25/13.
  */
@@ -10,13 +16,16 @@ public class GPSFixer {
      */
     private int timePeriod;
     private int dist;
+    private LocationManager locationManager;
 
     /**
      * Constructors
      */
-    public GPSFixer(int timePeriod, int dist){
+    public GPSFixer(int timePeriod, int dist, Activity activity){
         this.timePeriod = timePeriod;
         this.dist = dist;
+
+        locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
     }
 
     /**
@@ -41,7 +50,16 @@ public class GPSFixer {
     /**
      * GPS related method
      */
-    public void getPosition(){
-        //TODO Method stub - Write implementation and correct void to the right return object.
+    public ArrayList<Double> getPosition(){
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        ArrayList<Double> coordinates = new ArrayList<Double>();
+
+        if (location != null) {
+            coordinates.add( location.getLongitude() );
+            coordinates.add( location.getLatitude() );
+        }
+
+        return coordinates;
     }
 }
