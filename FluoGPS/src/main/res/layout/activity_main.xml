@@ -55,7 +55,8 @@
         android:text="Set"
         android:id="@+id/distBtn"
         android:layout_alignBottom="@+id/distInput"
-        android:layout_toRightOf="@+id/distInput" />
+        android:layout_toRightOf="@+id/distInput"
+        android:onClick="setDistBtnClicked"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -63,7 +64,8 @@
         android:text="Set"
         android:id="@+id/timeBtn"
         android:layout_alignBottom="@+id/timeInput"
-        android:layout_toRightOf="@+id/timeInput" />
+        android:layout_toRightOf="@+id/timeInput"
+        android:onClick="setTimeBtnClicked"/>
 
     <CheckBox
         android:layout_width="wrap_content"

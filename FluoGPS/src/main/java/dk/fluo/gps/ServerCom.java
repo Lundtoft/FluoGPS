@@ -98,7 +98,6 @@ public class ServerCom {
                 //TODO Handle problems..
             }
 
-            Log.e("resp", "" + responseString);
             return responseString;
         }
 
