@@ -5,6 +5,8 @@ import java.util.*;
 import android.app.Activity;
 import android.location.*;
 import android.content.Context;
+import android.util.Log;
+
 
 /**
  * Created by hagbarth on 9/25/13.
@@ -54,6 +56,7 @@ public class GPSFixer {
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
         ArrayList<Double> coordinates = new ArrayList<Double>();
+
 
         if (location != null) {
             coordinates.add( location.getLongitude() );
