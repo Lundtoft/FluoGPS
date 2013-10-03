@@ -3,7 +3,6 @@ package dk.fluo.gps;
 import android.content.Context;
 import android.net.http.*;
 import android.os.AsyncTask;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -63,7 +62,6 @@ public class ServerCom {
 
         @Override
         protected String doInBackground(String... parameters) {
-            Looper.prepare();
             String responseString = null;
             String uri = parameters[0];
             String lon = parameters[1];

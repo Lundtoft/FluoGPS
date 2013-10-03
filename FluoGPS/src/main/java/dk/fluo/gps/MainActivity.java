@@ -12,25 +12,26 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class MainActivity extends Activity {
     private Handler handler;
+    private ServerCom com;
+    private GPSFixer fixer;
+    private Runnable timer;
+    private Future timerFuture;
+    private ExecutorService executorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /*
-        ServerCom com = new ServerCom("http://users-cs.au.dk/lundtoft/pp/saveLocation.php", getApplicationContext());
-        GPSFixer fixer = new GPSFixer(10, 10, this);
-        ArrayList<Double> position = fixer.getPosition();
+        executorService = Executors.newSingleThreadExecutor();
 
-
-        com.sendFixToServer(position.get(0), position.get(1), System.currentTimeMillis() / 1000L);
-
-        Log.e("Lon: ", "" + position.get(0));
-        Log.e("Lat: ", "" + position.get(1));
-        */
+        com = new ServerCom("http://users-cs.au.dk/lundtoft/pp/saveLocation.php", getApplicationContext());
+        fixer = new GPSFixer(10, 10, this);
     }
 
     @Override
@@ -50,22 +51,34 @@ public class MainActivity extends Activity {
     }
 
     public void setTimeBtnClicked(View v){
+        timerFuture = executorService.submit(timer);
         handler = new Handler();
         handler.post(timer);
+    }
+
+    public void stopTimeBtnClicked(View v){
+        timerFuture.cancel(true);
+        handler.removeCallbacks(timer);
     }
 
     /**
      * Runnables
      */
-    Runnable timer = new Runnable() {
-        @Override
-        public void run() {
-            EditText timeTextInput = (EditText) findViewById(R.id.timeInput);
 
-            Toast.makeText(getApplicationContext(), "Hej!", Toast.LENGTH_SHORT).show();
+    {
+        timer = new Runnable() {
 
-            int delay = Integer.parseInt(timeTextInput.getText().toString());
-            handler.postDelayed(this, delay);
-        }
-    };
+            @Override
+            public void run(){
+                //Send position to server every user defines interval
+                ArrayList<Double> position = fixer.getPosition();
+                com.sendFixToServer(position.get(0), position.get(1), System.currentTimeMillis() / 1000L);
+
+                EditText timeTextInput = (EditText) findViewById(R.id.timeInput);
+                int delay = Integer.parseInt(timeTextInput.getText().toString());
+                handler.postDelayed(this, delay);
+            };
+
+        };
+    }
 }
