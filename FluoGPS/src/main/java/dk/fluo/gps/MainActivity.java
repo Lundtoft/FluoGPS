@@ -1,5 +1,6 @@
 package dk.fluo.gps;
 
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -30,8 +31,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         executorService = Executors.newSingleThreadExecutor();
 
+
+
         com = new ServerCom("http://users-cs.au.dk/lundtoft/pp/saveLocation.php", getApplicationContext());
-        fixer = new GPSFixer(10, 10, this);
+        fixer = new GPSFixer(0, 0, this);
     }
 
     @Override
@@ -46,39 +49,24 @@ public class MainActivity extends Activity {
      */
     public void setDistBtnClicked(View v){
         EditText distTextInput = (EditText) findViewById(R.id.distInput);
+        int dist = Integer.parseInt(distTextInput.getText().toString());
 
-        Toast.makeText(this, distTextInput.getText(), Toast.LENGTH_LONG).show();
+        fixer.setDist(dist);
+        fixer.startGPS();
+        Toast.makeText(this, "GPS Dist Started", Toast.LENGTH_SHORT).show();
     }
 
     public void setTimeBtnClicked(View v){
-        timerFuture = executorService.submit(timer);
-        handler = new Handler();
-        handler.post(timer);
+        EditText timeTextInput = (EditText) findViewById(R.id.timeInput);
+        int delay = Integer.parseInt(timeTextInput.getText().toString());
+
+        fixer.setTimePeriod(delay);
+        fixer.startGPS();
+        Toast.makeText(this, "GPS Time Started", Toast.LENGTH_SHORT).show();
     }
 
     public void stopTimeBtnClicked(View v){
-        timerFuture.cancel(true);
-        handler.removeCallbacks(timer);
-    }
-
-    /**
-     * Runnables
-     */
-
-    {
-        timer = new Runnable() {
-
-            @Override
-            public void run(){
-                //Send position to server every user defines interval
-                ArrayList<Double> position = fixer.getPosition();
-                com.sendFixToServer(position.get(0), position.get(1), System.currentTimeMillis() / 1000L);
-
-                EditText timeTextInput = (EditText) findViewById(R.id.timeInput);
-                int delay = Integer.parseInt(timeTextInput.getText().toString());
-                handler.postDelayed(this, delay);
-            };
-
-        };
+        fixer.stopGPS();
+        Toast.makeText(this, "GPS Stopped", Toast.LENGTH_SHORT).show();
     }
 }

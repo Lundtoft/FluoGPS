@@ -19,6 +19,7 @@ public class GPSFixer {
     private int timePeriod;
     private int dist;
     private LocationManager locationManager;
+    private FluoLocationListener listener;
 
     /**
      * Constructors
@@ -28,6 +29,9 @@ public class GPSFixer {
         this.dist = dist;
 
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
+        listener = new FluoLocationListener(activity);
+
+
     }
 
     /**
@@ -64,5 +68,20 @@ public class GPSFixer {
         }
 
         return coordinates;
+    }
+
+    public void startGPS(){
+        stopGPS();
+
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                timePeriod,
+                dist,
+                listener
+        );
+    }
+
+    public void stopGPS(){
+        locationManager.removeUpdates(listener);
     }
 }
