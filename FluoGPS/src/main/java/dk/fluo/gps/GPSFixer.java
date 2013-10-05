@@ -120,6 +120,7 @@ public class GPSFixer {
 
         SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         FluoSensorEventListener sensorList = new FluoSensorEventListener();
+        sensorList.setOnMoveListener(listener);
         sensorManager.registerListener(sensorList, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
 
         locationManager.requestLocationUpdates(
