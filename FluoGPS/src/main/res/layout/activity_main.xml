@@ -25,7 +25,8 @@
         android:layout_alignLeft="@+id/textView"
         android:background="#ffffff"
         android:textSize="30sp"
-        android:numeric="integer" />
+        android:numeric="integer"
+        android:text="0"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,7 +48,8 @@
         android:background="#ffffff"
         android:textSize="30sp"
         android:textIsSelectable="true"
-        android:numeric="integer" />
+        android:numeric="integer"
+        android:text="0"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -96,7 +98,8 @@
         android:textIsSelectable="true"
         android:layout_below="@+id/textView3"
         android:layout_alignLeft="@+id/timeInput"
-        android:numeric="integer" />
+        android:numeric="integer"
+        android:text="0"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -104,7 +107,8 @@
         android:text="Set"
         android:id="@+id/maxBtn"
         android:layout_alignBottom="@+id/maxInput"
-        android:layout_toRightOf="@+id/maxInput" />
+        android:layout_toRightOf="@+id/maxInput"
+        android:onClick="setSpeedBtnClicked"/>
 
     <Button
             style="?android:attr/buttonStyleSmall"

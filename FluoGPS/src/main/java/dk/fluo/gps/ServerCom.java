@@ -38,6 +38,7 @@ public class ServerCom {
      */
     private String uri;
     private Context context;
+    private Toast toast;
 
     /**
      * Constructors
@@ -45,14 +46,15 @@ public class ServerCom {
     public ServerCom(String uri, Context context){
         this.uri = uri;
         this.context = context;
+        toast = Toast.makeText(context, "Position Sent", 500);
     }
 
     /**
      * Com Methods
      */
-    public void sendFixToServer(double lon, double lat, long timestamp){
+    public void sendFixToServer(double lon, double lat, long timestamp, String title, String type){
        Log.e("timestamp", "" + timestamp);
-       new RequestTask().execute(uri, Double.toString(lon), Double.toString(lat), Long.toString(timestamp));
+       new RequestTask().execute(uri, Double.toString(lon), Double.toString(lat), Long.toString(timestamp), title, type);
     }
 
     /**
@@ -67,6 +69,8 @@ public class ServerCom {
             String lon = parameters[1];
             String lat = parameters[2];
             String timestamp = parameters[3];
+            String title = parameters[4];
+            String type = parameters[5];
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpResponse response;
@@ -76,6 +80,8 @@ public class ServerCom {
                 pairs.add(new BasicNameValuePair("lon", lon));
                 pairs.add(new BasicNameValuePair("lat", lat));
                 pairs.add(new BasicNameValuePair("timestamp", timestamp));
+                pairs.add(new BasicNameValuePair("title", title));
+                pairs.add(new BasicNameValuePair("type", type));
                 post.setEntity(new UrlEncodedFormEntity(pairs ));
 
                 response = httpclient.execute(post);
@@ -102,9 +108,18 @@ public class ServerCom {
         @Override
         protected void onPostExecute(String result) {
             if( result != null ){
-                if(result.equals("success")) Toast.makeText(context, "Position Sent", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(context, "An error happened", Toast.LENGTH_SHORT).show();
-            } else Toast.makeText(context, "An error happened", Toast.LENGTH_SHORT).show();
+                Log.e("Result:", result);
+                if(result.equals("success")) {
+                    toast.show();
+                }
+                else {
+                    toast.setText("An error happened");
+                    toast.show();
+                }
+            } else {
+                toast.setText("An error happened");
+                toast.show();
+            }
 
         }
     }

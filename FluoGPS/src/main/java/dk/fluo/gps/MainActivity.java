@@ -1,5 +1,8 @@
 package dk.fluo.gps;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Activity;
@@ -7,6 +10,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,11 +53,17 @@ public class MainActivity extends Activity {
      */
     public void setDistBtnClicked(View v){
         EditText distTextInput = (EditText) findViewById(R.id.distInput);
+        CheckBox accCheck = (CheckBox) findViewById(R.id.accelerometerCheck);
         int dist = Integer.parseInt(distTextInput.getText().toString());
 
         fixer.setDist(dist);
-        fixer.startGPS();
-        Toast.makeText(this, "GPS Dist Started", Toast.LENGTH_SHORT).show();
+        if (accCheck.isChecked()) {
+            fixer.startAccGPS();
+            Toast.makeText(this, "GPS Accelerometer Started", Toast.LENGTH_SHORT).show();
+        } else {
+            fixer.startDistGPS();
+            Toast.makeText(this, "GPS Dist Started", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setTimeBtnClicked(View v){
@@ -61,8 +71,20 @@ public class MainActivity extends Activity {
         int delay = Integer.parseInt(timeTextInput.getText().toString());
 
         fixer.setTimePeriod(delay);
-        fixer.startGPS();
+        fixer.startTimeGPS();
         Toast.makeText(this, "GPS Time Started", Toast.LENGTH_SHORT).show();
+    }
+
+    public void setSpeedBtnClicked(View v){
+        EditText distTextInput = (EditText) findViewById(R.id.distInput);
+        EditText maxTextInput = (EditText) findViewById(R.id.maxInput);
+        int dist = Integer.parseInt(distTextInput.getText().toString());
+        int speed = Integer.parseInt(maxTextInput.getText().toString());
+
+        fixer.setDist(dist);
+        fixer.setSpeed(speed);
+        fixer.startSpeedGPS();
+        Toast.makeText(this, "GPS Speed Started", Toast.LENGTH_SHORT).show();
     }
 
     public void stopTimeBtnClicked(View v){
