@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class FluoLocationListener implements LocationListener {
     private String type;
     private int dist, speed, time;
     private Location lastLocation;
+    private int numberOfFixes;
 
     /**
      *
@@ -31,6 +33,7 @@ public class FluoLocationListener implements LocationListener {
         speed = 0;
         lastLocation = null;
         firstFix = true;
+        numberOfFixes = 0;
     }
 
     /**
@@ -50,6 +53,17 @@ public class FluoLocationListener implements LocationListener {
 
     public void setSpeed(int value) {
         speed = value;
+    }
+
+    /**
+     * Getters
+     */
+    public String getTitle(){
+        return title;
+    }
+
+    public int getNumberOfFixes(){
+        return numberOfFixes;
     }
 
     /**
@@ -76,19 +90,23 @@ public class FluoLocationListener implements LocationListener {
                         if (location.getSpeed() < speed) {
                             com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                             lastLocation = location;
+                            numberOfFixes++;
                         }
                     } else {
                         com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                         lastLocation = location;
+                        numberOfFixes++;
                     }
                 }
             } else {
                 com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                 lastLocation = location;
+                numberOfFixes++;
             }
         //else assume that it is a time based positioning
         } else {
             com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
+            numberOfFixes++;
         }
     }
 

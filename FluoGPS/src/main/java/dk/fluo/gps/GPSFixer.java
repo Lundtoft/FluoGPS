@@ -24,6 +24,9 @@ public class GPSFixer {
     private LocationManager locationManager;
     private FluoLocationListener listener;
     private Activity activity;
+    private Logger logger;
+    private boolean acc;
+
     public boolean gpsRunning;
 
     /**
@@ -38,6 +41,8 @@ public class GPSFixer {
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         listener = new FluoLocationListener(activity, "time");
         gpsRunning = false;
+        logger = new Logger(activity);
+        acc = false;
     }
 
     /**
@@ -55,6 +60,10 @@ public class GPSFixer {
         return dist;
     }
 
+    public boolean getAcc(){
+        return acc;
+    }
+
     public void setTimePeriod(int timePeriod){
         this.timePeriod = timePeriod;
     }
@@ -67,11 +76,17 @@ public class GPSFixer {
         speed = value;
     }
 
+    public void setAcc(boolean acc) {
+        this.acc = acc;
+    }
+
     /**
      * GPS related methods
      */
 
     public void startTimeGPS(){
+        listener.setType("time");
+
         locationManager.removeUpdates(listener);
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
@@ -83,6 +98,9 @@ public class GPSFixer {
     }
 
     public void startDistGPS(){
+        listener.setType("dist");
+        listener.setType("accelerometer");
+
         locationManager.removeUpdates(listener);
         listener.setDist(dist);
         locationManager.requestLocationUpdates(
@@ -95,8 +113,9 @@ public class GPSFixer {
     }
 
     public void startSpeedGPS(){
-        locationManager.removeUpdates(listener);
+        listener.setType("speed");
 
+        locationManager.removeUpdates(listener);
         listener.setSpeed(speed);
         listener.setDist(dist);
         locationManager.requestLocationUpdates(
@@ -115,6 +134,8 @@ public class GPSFixer {
         timePeriod = 0;
         dist = 0;
         speed = 0;
+        logger.writeFile("Number of fixes: " + listener.getNumberOfFixes(), listener.getTitle() + ".txt");
+        logger.readFile(listener.getTitle() + ".txt");
     }
 
     public void pauseGPS(){

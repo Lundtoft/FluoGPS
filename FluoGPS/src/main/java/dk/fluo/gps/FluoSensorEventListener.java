@@ -29,6 +29,7 @@ public class FluoSensorEventListener implements SensorEventListener{
      */
     public FluoSensorEventListener(GPSFixer fixer){
         this.fixer = fixer;
+        fixer.setAcc(true);
         this.numberOfLows = 0;
         startToast = Toast.makeText(fixer.getActivity().getApplicationContext(), "GPS Accelerometer Started", Toast.LENGTH_SHORT);
         stopToast = Toast.makeText(fixer.getActivity().getApplicationContext(), "GPS Accelerometer Stopped", Toast.LENGTH_SHORT);
