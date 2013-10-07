@@ -24,6 +24,7 @@ public class GPSFixer {
     private LocationManager locationManager;
     private FluoLocationListener listener;
     private Activity activity;
+    public boolean gpsRunning;
 
     /**
      * Constructors
@@ -36,11 +37,16 @@ public class GPSFixer {
 
         locationManager = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         listener = new FluoLocationListener(activity, "time");
+        gpsRunning = false;
     }
 
     /**
      * Setters and getters
      */
+    public Activity getActivity(){
+        return activity;
+    }
+
     public int getTimePeriod(){
         return timePeriod;
     }
@@ -62,34 +68,22 @@ public class GPSFixer {
     }
 
     /**
-     * GPS related method
+     * GPS related methods
      */
-    public ArrayList<Double> getPosition(){
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-        ArrayList<Double> coordinates = new ArrayList<Double>();
-
-
-        if (location != null) {
-            coordinates.add( location.getLongitude() );
-            coordinates.add( location.getLatitude() );
-        }
-
-        return coordinates;
-    }
 
     public void startTimeGPS(){
-        stopGPS();
+        locationManager.removeUpdates(listener);
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 timePeriod,
                 0,
                 listener
         );
+        gpsRunning = true;
     }
 
     public void startDistGPS(){
-        stopGPS();
+        locationManager.removeUpdates(listener);
         listener.setDist(dist);
         locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
@@ -97,10 +91,11 @@ public class GPSFixer {
                 0,
                 listener
         );
+        gpsRunning = true;
     }
 
     public void startSpeedGPS(){
-        stopGPS();
+        locationManager.removeUpdates(listener);
 
         listener.setSpeed(speed);
         listener.setDist(dist);
@@ -110,29 +105,23 @@ public class GPSFixer {
                 0,
                 listener
         );
-    }
-
-    public void startAccGPS(){
-        stopGPS();
-
-        listener.setType("accelerometer");
-        listener.setDist(dist);
-
-        SensorManager sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-        FluoSensorEventListener sensorList = new FluoSensorEventListener();
-        sensorList.setOnMoveListener(listener);
-        sensorManager.registerListener(sensorList, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-
-        locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                0,
-                0,
-                listener
-        );
+        gpsRunning = true;
     }
 
     public void stopGPS(){
         listener.setFirstFix(true);
         locationManager.removeUpdates(listener);
+        gpsRunning = false;
+        timePeriod = 0;
+        dist = 0;
+        speed = 0;
+    }
+
+    public void pauseGPS(){
+        locationManager.removeUpdates(listener);
+        gpsRunning = false;
+        timePeriod = 0;
+        dist = 0;
+        speed = 0;
     }
 }

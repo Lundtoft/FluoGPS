@@ -11,80 +11,72 @@ import java.util.ArrayList;
 /**
  * Created by hagabrth on 10/3/13.
  */
-public class FluoLocationListener implements LocationListener, FluoSensorEventListener.onMoveListener {
+public class FluoLocationListener implements LocationListener {
     private Activity activity;
     private boolean firstFix;
     private String title;
     private String type;
     private int dist, speed, time;
     private Location lastLocation;
-    private boolean movedSinceLastLocation;
 
-    public FluoLocationListener(Activity activity, String type){
+    /**
+     *
+     * @param activity the activity which instantiates this object
+     * @param type dist, time, speed or accelerometer
+     */
+    public FluoLocationListener(Activity activity, String type) {
         this.activity = activity;
         this.type = type;
         dist = 0;
         speed = 0;
         lastLocation = null;
         firstFix = true;
-        movedSinceLastLocation = false;
     }
 
     /**
-     *
      * Setters
      */
-    public void setFirstFix(boolean value){
+    public void setFirstFix(boolean value) {
         firstFix = value;
     }
 
-    public void setType(String value){
+    public void setType(String value) {
         type = value;
     }
 
-    public void setDist(int value){
+    public void setDist(int value) {
         dist = value;
     }
 
-    public void setSpeed(int value){
+    public void setSpeed(int value) {
         speed = value;
     }
 
     /**
-     * onMoveListener interface
-     */
-    @Override
-    public void onMove() {
-        movedSinceLastLocation = true;
-    }
-
-    /**
-     *
      * LocationListener methods
      */
+    @Override
     public void onLocationChanged(Location location) {
         ServerCom com = new ServerCom("http://users-cs.au.dk/lundtoft/pp/saveLocation.php", activity.getApplicationContext());
         long timestamp = location.getTime() / 1000;
 
+        //Set title of file to be saved if this is the first fix of the process
         if (firstFix) {
             title = Long.toString(timestamp);
             firstFix = false;
         }
 
+        //if distance is more than zero, do distance based positioning
         if (dist > 0){
-            type = "dist";
+            //if not first location compare to last location
             if (lastLocation != null) {
                 if (lastLocation.distanceTo(location) >= dist){
+                    //if speed is more than zero, only send position if actual speed is more than the given min speed
                     if (speed > 0) {
-                        type = "speed";
                         if (location.getSpeed() < speed) {
                             com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                             lastLocation = location;
                         }
-                    } else if (type.equals("accelerometer") && movedSinceLastLocation){
-                        com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
-                        lastLocation = location;
-                        movedSinceLastLocation = false;
                     } else {
                         com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                         lastLocation = location;
@@ -94,20 +86,21 @@ public class FluoLocationListener implements LocationListener, FluoSensorEventLi
                 com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
                 lastLocation = location;
             }
+        //else assume that it is a time based positioning
         } else {
-            type = "time";
             com.sendFixToServer(location.getLongitude(), location.getLatitude(), timestamp, title, type);
         }
     }
 
+    @Override
     public void onStatusChanged(String s, int i, Bundle b) {
 
     }
-
+    @Override
     public void onProviderDisabled(String s) {
 
     }
-
+    @Override
     public void onProviderEnabled(String s) {
 
     }

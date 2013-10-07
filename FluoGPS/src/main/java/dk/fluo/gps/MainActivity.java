@@ -28,6 +28,8 @@ public class MainActivity extends Activity {
     private Runnable timer;
     private Future timerFuture;
     private ExecutorService executorService;
+    private FluoSensorEventListener sensorListener;
+    private SensorManager sensorMan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         executorService = Executors.newSingleThreadExecutor();
 
-
-
         com = new ServerCom("http://users-cs.au.dk/lundtoft/pp/saveLocation.php", getApplicationContext());
         fixer = new GPSFixer(0, 0, this);
+        sensorListener = new FluoSensorEventListener(fixer);
+        sensorMan = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     }
 
     @Override
@@ -58,8 +60,8 @@ public class MainActivity extends Activity {
 
         fixer.setDist(dist);
         if (accCheck.isChecked()) {
-            fixer.startAccGPS();
-            Toast.makeText(this, "GPS Accelerometer Started", Toast.LENGTH_SHORT).show();
+            sensorMan.registerListener(sensorListener, sensorMan.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
+            Toast.makeText(this, "Accelerometer detection started", Toast.LENGTH_SHORT).show();
         } else {
             fixer.startDistGPS();
             Toast.makeText(this, "GPS Dist Started", Toast.LENGTH_SHORT).show();
@@ -87,8 +89,9 @@ public class MainActivity extends Activity {
         Toast.makeText(this, "GPS Speed Started", Toast.LENGTH_SHORT).show();
     }
 
-    public void stopTimeBtnClicked(View v){
+    public void stopBtnClicked(View v){
         fixer.stopGPS();
+        sensorMan.unregisterListener(sensorListener);
         Toast.makeText(this, "GPS Stopped", Toast.LENGTH_SHORT).show();
     }
 }
