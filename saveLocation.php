@@ -1,6 +1,6 @@
 <?php
 	
-	//Decode the json string from the Android app
+	//Get post variables from Android app
 	$timestamp = date('Y-m-d H:i:s', $_POST['timestamp']);
 	$lon = $_POST['lon'];
 	$lat = $_POST['lat'];
